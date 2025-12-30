@@ -18,6 +18,7 @@ namespace IntegrationService.Controllers
         public IActionResult SyncGusto([FromBody] SyncRequest request)
             {
             if (string.IsNullOrEmpty(request.CompanyId))
+
                 return BadRequest("Company ID required");
 
             var result = _gustoService.SyncPayroll(request.CompanyId);
