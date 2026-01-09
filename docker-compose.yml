@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  apigateway:
+    build: ./ApiGateway
+    container_name: payroll-apigateway
+    ports:
+      - "5000:5000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    networks:
+      - payroll-network
+
+  authservice:
+    build: ./AuthService
+    container_name: payroll-authservice
+    ports:
+      - "5001:5001"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    networks:
+      - payroll-network
+
+  payrollservice:
+    build: ./PayrollService
+    container_name: payroll-payrollservice
+    ports:
+      - "5002:5002"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=host.docker.internal;Database=PayrollDB;User Id=sa;Password=bqeko@123;TrustServerCertificate=True;"
+    networks:
+      - payroll-network
+
+  integrationservice:
+    build: ./IntegrationService
+    container_name: payroll-integrationservice
+    ports:
+      - "5003:5003"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    networks:
+      - payroll-network
+
+  reportingservice:
+    build: ./ReportingService
+    container_name: payroll-reportingservice
+    ports:
+      - "5004:5004"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    networks:
+      - payroll-network
+
+networks:
+  payroll-network:
+    driver: bridge
