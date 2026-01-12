@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using PayrollService.Data;
-var connectionString = "Data Source=KFWWASNAB\\SQL2022;Initial Catalog=PayrollDB;User Id=sa;Password=bqeko@123;Pooling=true;Max Pool Size=100;Min Pool Size=10;Connection Lifetime=1800";
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddMemoryCache();
 // Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

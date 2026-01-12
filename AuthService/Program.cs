@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using AuthService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddMemoryCache();
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
