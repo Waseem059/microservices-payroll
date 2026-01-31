@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using PayrollService.Data;
 using PayrollService.Models;
+using PayrollService.Services;
+using System.ComponentModel.Design;
 
 namespace PayrollService.Controllers
     {
@@ -12,10 +14,12 @@ namespace PayrollService.Controllers
         {
         private readonly PayrollContext _context;
         private readonly IMemoryCache _memoryCache;
-        public PayrollController(PayrollContext context,IMemoryCache memoryCache)
+        private readonly IntegrationServiceClient _integrationService;
+        public PayrollController(PayrollContext context,IMemoryCache memoryCache, IntegrationServiceClient integrationService)
             {
             _context = context;
             _memoryCache = memoryCache;
+            _integrationService = integrationService;
             }
 
         [HttpGet("employees")]
@@ -71,7 +75,7 @@ namespace PayrollService.Controllers
             }
 
             [HttpPost("process")]
-        public IActionResult ProcessPayroll([FromBody] PayrollCalculation request)
+        public async Task< IActionResult> ProcessPayroll([FromBody] PayrollCalculation request)
             {
             var employee = _context.Employees.FirstOrDefault(e => e.Id == request.EmployeeId);
             if (employee == null)
@@ -91,7 +95,7 @@ namespace PayrollService.Controllers
 
             _context.PayrollRecords.Add(record);
             _context.SaveChanges();
-
+            var syncResult = await _integrationService.SyncPayrollWithGusto(request.EmployeeId.ToString());
             return Ok(new { message = "Payroll processed", record });
             }
         }
